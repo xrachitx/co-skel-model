@@ -5,6 +5,8 @@ import torchvision.models as models
 import numpy as np
 import cv2 
 from torch.autograd import Variable
+from dataloader import LoadData
+from torch.utils.data import Dataset, DataLoader
 
 class Encoder(nn.Module):
     def __init__(self):
@@ -14,7 +16,7 @@ class Encoder(nn.Module):
         vgg16_3 = list(models.vgg16(pretrained = True).features)
         vgg16_4 = list(models.vgg16(pretrained = True).features)
         self.vgg16s = [vgg16_1,vgg16_2,vgg16_3,vgg16_4]
-        self.transpose_convs = [nn.ConvTranspose2d(512,512,2,2),nn.ConvTranspose2d(512,256,2,2),nn.ConvTranspose2d(256,128,2,2),nn.ConvTranspose2d(128,64,2,2),nn.ConvTranspose2d(64,3,2,2)]
+        self.transpose_convs = [nn.ConvTranspose2d(512,512,2,2),nn.ConvTranspose2d(512,256,2,2),nn.ConvTranspose2d(256,128,2,2),nn.ConvTranspose2d(128,64,2,2),nn.ConvTranspose2d(64,1,2,2)]
     
     def concat_imgs(self, inps,out):
         # out = 
@@ -30,15 +32,17 @@ class Encoder(nn.Module):
 
     def forward(self, x):
 
-        image1 = cv2.imread(x)
-        image1=np.moveaxis(image1,2,0)
-        x=Variable(torch.from_numpy(image1)).unsqueeze(0).float()   
+        # image1 = cv2.imread(x)
+        # image1=np.moveaxis(image1,2,0)
+        # x=Variable(torch.from_numpy(image1)).unsqueeze(0).float()   
         shape0 = x.shape[-2]
         shape1 = x.shape[-1]
         input_imgs = []
         for i in range(2):
             for j in range(2):
+                
                 input_imgs.append(x[:, :,i*shape0//2:(i+1)*shape0//2,j*shape1//2:(j+1)*shape1//2])
+                print(input_imgs[-1].shape)
 
         self.vgg_features = []
         for j in range(4):
@@ -62,8 +66,21 @@ class Encoder(nn.Module):
             out = self.concat_imgs([self.vgg_features[j][i] for j in range(4)],out)
             x = x+out
         x = self.transpose_convs[-1](x)
+        print(x.shape)
         return x
 
 if __name__ == "__main__":
+    rootDir ="./CoSkel+"
+    files = "./CoSkel+/train.csv"
+
+    td = LoadData(files, rootDir)
+    train_dataloader = DataLoader(td,batch_size=20)
     e = Encoder()
-    e("new.png")
+    print(train_dataloader)
+    for i, (data) in enumerate(train_dataloader,0):
+        print(data[0].shape,data[1].shape)
+        e(data[0])
+
+        exit()
+    
+    
