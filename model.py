@@ -34,9 +34,12 @@ class Model(nn.Module):
             
         self.transpose_convs = nn.ModuleList([nn.Sequential(nn.ConvTranspose2d(512,512,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(512,256,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(256,128,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(128,64,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(64,1,2,2))])
         self.sigmoid = nn.Sigmoid()
+        self.device = "cuda"
     
     def concat_imgs(self, inps,out):
         # out = 
+        inps = inps.to(self.device)
+        out = out.to(self.device)
         x = out.shape[-2]
         y = out.shape[-1]
         cnt = 0
