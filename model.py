@@ -38,7 +38,7 @@ class Model(nn.Module):
     
     def concat_imgs(self, inps,out):
         # out = 
-        inps = inps.to(self.device)
+        # inps = inps.to(self.device)
         out = out.to(self.device)
         x = out.shape[-2]
         y = out.shape[-1]
