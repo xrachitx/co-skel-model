@@ -87,7 +87,7 @@ class Model(nn.Module):
             x = x+out
         x = self.transpose_convs[-1](x)
         x = self.sigmoid(x)
-        print(x.shape)
+        # print(x.shape)
         return x
 
 if __name__ == "__main__":
