@@ -50,7 +50,7 @@ if __name__ == "__main__":
     print(model)
     criterion = nn.BCELoss()
     optimizer = torch.optim.Adam(model.parameters(),lr = lr)
-    for epoch in range(tqdm(epochs)):
+    for epoch in tqdm(range(epochs)):
         loss_arr = []
         # print(f"Epoch: {epoch}-------Starting:")
         for i, (img,label) in enumerate(train_dataloader,0):
