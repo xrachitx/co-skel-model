@@ -50,7 +50,7 @@ for epoch in range(epochs):
         # break
     print(f"Epoch: {epoch}-------Loss: {np.mean(loss_arr)}")
     file = open('logs.csv','a+')
-    file.write(f"{epoch},{np.mean(loss_arr)}")
+    file.write(f"{epoch},{np.mean(loss_arr)}\n")
     file.close()
 
     if epochs % checkpoints == 0:
