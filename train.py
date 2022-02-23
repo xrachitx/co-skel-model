@@ -9,6 +9,7 @@ from torch.autograd import Variable
 from dataloader import LoadData
 from torch.utils.data import Dataset, DataLoader
 from model import Model
+from tqdm import tqdm
 
 
 epochs = 2
@@ -31,16 +32,16 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(),lr = lr)
 for epoch in range(epochs):
     loss_arr = []
-    for i, (img,label) in enumerate(train_dataloader,0):
+    for i, (img,label) in enumerate(tqdm(train_dataloader,0)):
         img = img.to(device)
         label = label.to(device)
-        print("modelling")
+        # print("modelling")
         pred = model(img)
         print(torch.unique(pred),torch.unique(label))
-        print("lossing")
+        # print("lossing")
         loss = criterion(pred,label)
         optimizer.zero_grad()
-        print("backing")
+        # print("backing")
         loss.backward()
         optimizer.step()
         loss_arr.append(loss.item())
