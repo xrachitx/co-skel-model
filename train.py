@@ -27,7 +27,7 @@ model = Model()
 for params in model.parameters():
     params.requires_grad = True
 
-# print(model)
+print(model)
 criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(),lr = lr)
 for epoch in range(epochs):
