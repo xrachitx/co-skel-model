@@ -16,6 +16,8 @@ import argparse
 def parse_args():
     parser = argparse.ArgumentParser(description='TRAIN CoSkel+')
     parser.add_argument('--batch', default=20, type=int)
+    parser.add_argument('--epochs', default=20, type=int)
+    parser.add_argument('--lr', default=1e-5, type=float)
 
     args = parser.parse_args()
 
@@ -25,10 +27,10 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
 
-    epochs = 20
+    epochs = args.epochs
     rootDir ="../../input/co-skel-448x448/CoSkel+"
     files = "../../input/co-skel-448x448/CoSkel+/train.csv"
-    lr = 1e-5
+    lr = args.lr
     device = "cuda"
     checkpoints = 5
     batch_size = args.batch
@@ -48,10 +50,10 @@ if __name__ == "__main__":
     print(model)
     criterion = nn.BCELoss()
     optimizer = torch.optim.Adam(model.parameters(),lr = lr)
-    for epoch in range(epochs):
+    for epoch in range(tqdm(epochs)):
         loss_arr = []
-        print(f"Epoch: {epoch}-------Starting:")
-        for i, (img,label) in enumerate(tqdm(train_dataloader,0)):
+        # print(f"Epoch: {epoch}-------Starting:")
+        for i, (img,label) in enumerate(train_dataloader,0):
             img = img.to(device)
             label = label.to(device)
             model = model.to(device)
