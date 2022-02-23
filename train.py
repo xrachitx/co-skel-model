@@ -11,12 +11,12 @@ from torch.utils.data import Dataset, DataLoader
 from model import Model
 
 
-epochs = 20
+epochs = 2
 rootDir ="./CoSkel+"
 files = "./CoSkel+/train.csv"
 lr = 1e-5
 device = "cpu"
-checkpoints = 5
+checkpoints = 1
 
 
 td = LoadData(files, rootDir)
@@ -26,7 +26,7 @@ model = Model()
 for params in model.parameters():
     params.requires_grad = True
 
-print(model)
+# print(model)
 criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(),lr = lr)
 for epoch in range(epochs):
