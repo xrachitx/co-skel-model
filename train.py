@@ -37,7 +37,7 @@ for epoch in range(epochs):
         label = label.to(device)
         # print("modelling")
         pred = model(img)
-        print(torch.unique(pred),torch.unique(label))
+        # print(torch.unique(pred),torch.unique(label))
         # print("lossing")
         loss = criterion(pred,label)
         optimizer.zero_grad()
