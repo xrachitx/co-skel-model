@@ -11,53 +11,67 @@ from torch.utils.data import Dataset, DataLoader
 from model import Model
 from tqdm import tqdm
 import os
+import argparse
 
-epochs = 2
-rootDir ="../../input/co-skel-448x448/CoSkel+"
-files = "../../input/co-skel-448x448/CoSkel+/train.csv"
-lr = 1e-5
-device = "cuda"
-checkpoints = 1
+def parse_args():
+    parser = argparse.ArgumentParser(description='TRAIN CoSkel+')
+    parser.add_argument('--batch', default=20, type=int)
 
-try:
-    os.makedirs("Checkpoints")
-except:
-    print("Checkpoint Folder Exists")
+    args = parser.parse_args()
 
-td = LoadData(files, rootDir)
-train_dataloader = DataLoader(td,batch_size=20)
-model = Model()
-# print(e.parameters())
-for params in model.parameters():
-    params.requires_grad = True
+    return args
 
-print(model)
-criterion = nn.BCELoss()
-optimizer = torch.optim.Adam(model.parameters(),lr = lr)
-for epoch in range(epochs):
-    loss_arr = []
-    print(f"Epoch: {epoch}-------Starting:")
-    for i, (img,label) in enumerate(tqdm(train_dataloader,0)):
-        img = img.to(device)
-        label = label.to(device)
-        model = model.to(device)
-        # print("modelling")
-        pred = model(img)
-        # print(torch.unique(pred),torch.unique(label))
-        # print("lossing")
-        loss = criterion(pred,label)
-        optimizer.zero_grad()
-        # print("backing")
-        loss.backward()
-        optimizer.step()
-        loss_arr.append(loss.item())
 
-        # break
-    print(f"Epoch: {epoch}-------Loss: {np.mean(loss_arr)}")
-    file = open('logs.csv','a+')
-    file.write(f"{epoch},{np.mean(loss_arr)}\n")
-    file.close()
+if __name__ == "__main__":
+    args = parse_args()
 
-    if epochs % checkpoints == 0:
-        path = f"./Checkpoints/model_{epoch}.pth"
-        torch.save(model, path)
+    epochs = 20
+    rootDir ="../../input/co-skel-448x448/CoSkel+"
+    files = "../../input/co-skel-448x448/CoSkel+/train.csv"
+    lr = 1e-5
+    device = "cuda"
+    checkpoints = 5
+    batch_size = args.batch
+
+    try:
+        os.makedirs("Checkpoints")
+    except:
+        print("Checkpoint Folder Exists")
+
+    td = LoadData(files, rootDir)
+    train_dataloader = DataLoader(td,batch_size=batch_size)
+    model = Model()
+    # print(e.parameters())
+    for params in model.parameters():
+        params.requires_grad = True
+
+    print(model)
+    criterion = nn.BCELoss()
+    optimizer = torch.optim.Adam(model.parameters(),lr = lr)
+    for epoch in range(epochs):
+        loss_arr = []
+        print(f"Epoch: {epoch}-------Starting:")
+        for i, (img,label) in enumerate(tqdm(train_dataloader,0)):
+            img = img.to(device)
+            label = label.to(device)
+            model = model.to(device)
+            # print("modelling")
+            pred = model(img)
+            # print(torch.unique(pred),torch.unique(label))
+            # print("lossing")
+            loss = criterion(pred,label)
+            optimizer.zero_grad()
+            # print("backing")
+            loss.backward()
+            optimizer.step()
+            loss_arr.append(loss.item())
+
+            # break
+        print(f"Epoch: {epoch}-------Loss: {np.mean(loss_arr)}")
+        file = open('logs.csv','a+')
+        file.write(f"{epoch},{np.mean(loss_arr)}\n")
+        file.close()
+
+        if epochs % checkpoints == 0:
+            path = f"./Checkpoints/model_{epoch}.pth"
+            torch.save(model, path)
