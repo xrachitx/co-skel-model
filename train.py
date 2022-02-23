@@ -10,7 +10,7 @@ from dataloader import LoadData
 from torch.utils.data import Dataset, DataLoader
 from model import Model
 from tqdm import tqdm
-
+import os
 
 epochs = 2
 rootDir ="../../input/co-skel-448x448/CoSkel+"
@@ -19,6 +19,10 @@ lr = 1e-5
 device = "cuda"
 checkpoints = 1
 
+try:
+    os.makedirs("Checkpoints")
+except:
+    print("Checkpoint Folder Exists")
 
 td = LoadData(files, rootDir)
 train_dataloader = DataLoader(td,batch_size=20)
@@ -55,5 +59,5 @@ for epoch in range(epochs):
     file.close()
 
     if epochs % checkpoints == 0:
-        path = f"model_{epoch}.pth"
+        path = f"./Checkpoints/model_{epoch}.pth"
         torch.save(model, path)
