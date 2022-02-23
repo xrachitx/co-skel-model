@@ -12,8 +12,8 @@ from model import Model
 
 
 epochs = 2
-rootDir ="./CoSkel+"
-files = "./CoSkel+/train.csv"
+rootDir ="../../input/CoSkel+"
+files = "../../input/CoSkel+/train.csv"
 lr = 1e-5
 device = "cpu"
 checkpoints = 1
