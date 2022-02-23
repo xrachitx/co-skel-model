@@ -32,6 +32,7 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(),lr = lr)
 for epoch in range(epochs):
     loss_arr = []
+    print(f"Epoch: {epoch}-------Starting:")
     for i, (img,label) in enumerate(tqdm(train_dataloader,0)):
         img = img.to(device)
         label = label.to(device)
