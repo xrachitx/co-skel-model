@@ -1,3 +1,4 @@
+from importlib.resources import path
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -15,6 +16,7 @@ rootDir ="./CoSkel+"
 files = "./CoSkel+/train.csv"
 lr = 1e-5
 device = "cpu"
+checkpoints = 5
 
 
 td = LoadData(files, rootDir)
@@ -28,7 +30,7 @@ print(model)
 criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(),lr = lr)
 for epoch in range(epochs):
-
+    loss_arr = []
     for i, (img,label) in enumerate(train_dataloader,0):
         img = img.to(device)
         label = label.to(device)
@@ -41,8 +43,14 @@ for epoch in range(epochs):
         print("backing")
         loss.backward()
         optimizer.step()
-        break
-    print(f"Epoch: {epoch}-------Loss: {loss.item()}")
-    exit()
+        loss_arr.append(loss.item())
 
+        # break
+    print(f"Epoch: {epoch}-------Loss: {np.mean(loss_arr)}")
+    file = open('logs.csv','a+')
+    file.write(f"{epoch},{np.mean(loss_arr)}")
+    file.close()
 
+    if epochs % checkpoints == 0:
+        path = f"model_{epoch}.pth"
+        torch.save(model, path)
