@@ -16,7 +16,7 @@ epochs = 2
 rootDir ="../../input/co-skel-448x448/CoSkel+"
 files = "../../input/co-skel-448x448/CoSkel+/train.csv"
 lr = 1e-5
-device = "cpu"
+device = "cuda"
 checkpoints = 1
 
 
@@ -35,6 +35,7 @@ for epoch in range(epochs):
     for i, (img,label) in enumerate(tqdm(train_dataloader,0)):
         img = img.to(device)
         label = label.to(device)
+        model = model.to(device)
         # print("modelling")
         pred = model(img)
         # print(torch.unique(pred),torch.unique(label))
