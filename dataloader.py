@@ -32,7 +32,10 @@ class LoadData(Dataset):
         # targetImage = torch.Tensor(targetImage)
         # print(inputImage.shape,targetImage.shape)
         inputImage = inputImage.astype(np.float32)
+        targetImage = targetImage > 0.0
+        targetImage = targetImage.astype(np.float32)
         inputImage = inputImage.transpose((2, 0, 1))
+        targetImage = np.expand_dims(targetImage,axis=0)
         return inputImage, targetImage
 
 if __name__ == "__main__":

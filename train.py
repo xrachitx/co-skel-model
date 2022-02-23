@@ -1,0 +1,48 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torchvision.models as models
+import numpy as np
+import cv2 
+from torch.autograd import Variable
+from dataloader import LoadData
+from torch.utils.data import Dataset, DataLoader
+from model import Model
+
+
+epochs = 20
+rootDir ="./CoSkel+"
+files = "./CoSkel+/train.csv"
+lr = 1e-5
+device = "cpu"
+
+
+td = LoadData(files, rootDir)
+train_dataloader = DataLoader(td,batch_size=20)
+model = Model()
+# print(e.parameters())
+for params in model.parameters():
+    params.requires_grad = True
+
+print(model)
+criterion = nn.BCELoss()
+optimizer = torch.optim.Adam(model.parameters(),lr = lr)
+for epoch in range(epochs):
+
+    for i, (img,label) in enumerate(train_dataloader,0):
+        img = img.to(device)
+        label = label.to(device)
+        print("modelling")
+        pred = model(img)
+        print(torch.unique(pred),torch.unique(label))
+        print("lossing")
+        loss = criterion(pred,label)
+        optimizer.zero_grad()
+        print("backing")
+        loss.backward()
+        optimizer.step()
+        break
+    print(f"Epoch: {epoch}-------Loss: {loss.item()}")
+    exit()
+
+

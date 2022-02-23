@@ -8,15 +8,32 @@ from torch.autograd import Variable
 from dataloader import LoadData
 from torch.utils.data import Dataset, DataLoader
 
-class Encoder(nn.Module):
+class Model(nn.Module):
     def __init__(self):
         super().__init__()
-        vgg16_1 = list(models.vgg16(pretrained = True).features)
-        vgg16_2 = list(models.vgg16(pretrained = True).features)
-        vgg16_3 = list(models.vgg16(pretrained = True).features)
-        vgg16_4 = list(models.vgg16(pretrained = True).features)
-        self.vgg16s = [vgg16_1,vgg16_2,vgg16_3,vgg16_4]
-        self.transpose_convs = [nn.ConvTranspose2d(512,512,2,2),nn.ConvTranspose2d(512,256,2,2),nn.ConvTranspose2d(256,128,2,2),nn.ConvTranspose2d(128,64,2,2),nn.ConvTranspose2d(64,1,2,2)]
+        vgg1 = models.vgg16(pretrained = True)
+        vgg2 = models.vgg16(pretrained = True)
+        vgg3 = models.vgg16(pretrained = True)
+        vgg4 = models.vgg16(pretrained = True)
+        for param in vgg1.parameters():
+            param.requires_grad = False
+        for param in vgg2.parameters():
+            param.requires_grad = False
+        for param in vgg3.parameters():
+            param.requires_grad = False
+        for param in vgg4.parameters():
+            param.requires_grad = False
+        vgg16_1 = nn.ModuleList(list(vgg1.features))
+        vgg16_2 = nn.ModuleList(list(vgg2.features))
+        vgg16_3 = nn.ModuleList(list(vgg3.features))
+        vgg16_4 = nn.ModuleList(list(vgg4.features))
+
+        self.vgg16s = nn.ModuleList([vgg16_1,vgg16_2,vgg16_3,vgg16_4])
+        # print(self.vgg16s)
+        # for vgg in self.vgg16s:
+            
+        self.transpose_convs = nn.ModuleList([nn.Sequential(nn.ConvTranspose2d(512,512,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(512,256,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(256,128,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(128,64,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(64,1,2,2))])
+        self.sigmoid = nn.Sigmoid()
     
     def concat_imgs(self, inps,out):
         # out = 
@@ -42,7 +59,7 @@ class Encoder(nn.Module):
             for j in range(2):
                 
                 input_imgs.append(x[:, :,i*shape0//2:(i+1)*shape0//2,j*shape1//2:(j+1)*shape1//2])
-                print(input_imgs[-1].shape)
+                # print(input_imgs[-1].shape)
 
         self.vgg_features = []
         for j in range(4):
@@ -66,6 +83,7 @@ class Encoder(nn.Module):
             out = self.concat_imgs([self.vgg_features[j][i] for j in range(4)],out)
             x = x+out
         x = self.transpose_convs[-1](x)
+        x = self.sigmoid(x)
         print(x.shape)
         return x
 
@@ -75,8 +93,9 @@ if __name__ == "__main__":
 
     td = LoadData(files, rootDir)
     train_dataloader = DataLoader(td,batch_size=20)
-    e = Encoder()
-    print(train_dataloader)
+    e = Model()
+    print(e)
+    # print(train_dataloader)
     for i, (data) in enumerate(train_dataloader,0):
         print(data[0].shape,data[1].shape)
         e(data[0])
