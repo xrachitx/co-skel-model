@@ -78,6 +78,6 @@ if __name__ == "__main__":
             path = f"./Checkpoints/model_{epoch}.pth"
             torch.save(model, path)
 
-    path = f"./Checkpoints/model_{epoch}.pth"
+    path = f"./Checkpoints/model_{epochs}.pth"
     torch.save(model, path)
         
