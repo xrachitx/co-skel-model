@@ -76,8 +76,8 @@ if __name__ == "__main__":
 
         if epoch % checkpoints == 0:
             path = f"./Checkpoints/model_{epoch}.pth"
-            torch.save(model, path)
+            torch.save(model.state_dict(), path)
 
     path = f"./Checkpoints/model_{epochs}.pth"
-    torch.save(model, path)
+    torch.save(model.state_dict(), path)
         
