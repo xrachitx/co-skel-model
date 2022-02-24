@@ -74,6 +74,10 @@ if __name__ == "__main__":
         file.write(f"{epoch},{np.mean(loss_arr)}\n")
         file.close()
 
-        if epochs % checkpoints == 0:
+        if epoch % checkpoints == 0:
             path = f"./Checkpoints/model_{epoch}.pth"
             torch.save(model, path)
+
+    path = f"./Checkpoints/model_{epoch}.pth"
+    torch.save(model, path)
+        
