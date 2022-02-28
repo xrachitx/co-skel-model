@@ -9,20 +9,22 @@ from dataloader import LoadData
 from torch.utils.data import Dataset, DataLoader
 
 class Model(nn.Module):
-    def __init__(self):
+    def __init__(self,device,freeze_encoder=True):
         super().__init__()
         vgg1 = models.vgg16(pretrained = True)
         vgg2 = models.vgg16(pretrained = True)
         vgg3 = models.vgg16(pretrained = True)
         vgg4 = models.vgg16(pretrained = True)
-        for param in vgg1.parameters():
-            param.requires_grad = False
-        for param in vgg2.parameters():
-            param.requires_grad = False
-        for param in vgg3.parameters():
-            param.requires_grad = False
-        for param in vgg4.parameters():
-            param.requires_grad = False
+        if freeze_encoder:
+            for param in vgg1.parameters():
+                param.requires_grad = False
+                print(param.requires_grad)
+            for param in vgg2.parameters():
+                param.requires_grad = False
+            for param in vgg3.parameters():
+                param.requires_grad = False
+            for param in vgg4.parameters():
+                param.requires_grad = False
         vgg16_1 = nn.ModuleList(list(vgg1.features))
         vgg16_2 = nn.ModuleList(list(vgg2.features))
         vgg16_3 = nn.ModuleList(list(vgg3.features))
@@ -34,7 +36,7 @@ class Model(nn.Module):
             
         self.transpose_convs = nn.ModuleList([nn.Sequential(nn.ConvTranspose2d(512,512,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(512,256,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(256,128,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(128,64,2,2),nn.ReLU()),nn.Sequential(nn.ConvTranspose2d(64,1,2,2))])
         self.sigmoid = nn.Sigmoid()
-        self.device = "cuda"
+        self.device = device
     
     def concat_imgs(self, inps,out):
         # out = 
@@ -94,15 +96,15 @@ if __name__ == "__main__":
     rootDir ="./CoSkel+"
     files = "./CoSkel+/train.csv"
 
-    td = LoadData(files, rootDir)
-    train_dataloader = DataLoader(td,batch_size=20)
+#    td = LoadData(files, rootDir)
+#    train_dataloader = DataLoader(td,batch_size=20)
     e = Model()
     print(e)
     # print(train_dataloader)
-    for i, (data) in enumerate(train_dataloader,0):
-        print(data[0].shape,data[1].shape)
-        e(data[0])
+    #for i, (data) in enumerate(train_dataloader,0):
+     #   print(data[0].shape,data[1].shape)
+      #  e(data[0])
 
-        exit()
+       # exit()
     
     

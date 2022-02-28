@@ -19,25 +19,23 @@ class LoadData(Dataset):
         return len(self.frame)
 
     def __getitem__(self, idx):
-        inputName = os.path.join(self.rootDir, self.frame.iloc[idx, 0][1:])
-        targetName = os.path.join(self.rootDir, self.frame.iloc[idx, 1][1:])
-        # print(type(self.rootDir), type(self.frame.iloc[idx, 0]))
-        # print(inputName,targetName)
+
+        inputName = os.path.join(self.rootDir, self.frame.iloc[idx, 0][:])
+        targetName = os.path.join(self.rootDir, self.frame.iloc[idx, 1][:])
+        print(inputName,targetName)
         inputImage = cv2.imread(inputName)
         targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
     
-        # inputImage = torch.Tensor(inputImage).cuda()
-        # targetImage = torch.Tensor(targetImage).cuda()
-
-        # inputImage = torch.Tensor(inputImage)
-        # targetImage = torch.Tensor(targetImage)
-        # print(inputImage.shape,targetImage.shape)
-        inputImage = inputImage.astype(np.float32)
+        
         targetImage = targetImage > 0.0
+        counts = np.unique(targetImage,return_counts=True)[1]
+        weights = np.array([ counts[0]/(counts[0]+counts[1]) , counts[1]/(counts[0]+counts[1]) ])
+        inputImage = inputImage.astype(np.float32)
         targetImage = targetImage.astype(np.float32)
         inputImage = inputImage.transpose((2, 0, 1))
         targetImage = np.expand_dims(targetImage,axis=0)
-        return inputImage, targetImage
+
+        return inputImage, targetImage,weights
 
 if __name__ == "__main__":
     rootDir ="./CoSkel+"
@@ -47,6 +45,6 @@ if __name__ == "__main__":
     train_dataloader = DataLoader(td,batch_size=20)
     # print(train_dataloader)
     for i, (data) in enumerate(train_dataloader,0):
-        print(data[0].shape,data[1].shape)
+        print(data[0].shape,data[1].shape,data[2])
         exit()
     # print(len(train_dataloader))

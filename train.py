@@ -13,6 +13,15 @@ from tqdm import tqdm
 import os
 import argparse
 
+def BCELoss_class_weighted():
+
+    def loss(input, target,weights):
+        input = torch.clamp(input,min=1e-7,max=1-1e-7)
+        bce = - weights[:,0] * target * torch.log(input) - (1 - target) * weights[:,1] * torch.log(1 - input)
+        return torch.mean(bce)
+
+  return loss
+
 def parse_args():
     parser = argparse.ArgumentParser(description='TRAIN CoSkel+')
     parser.add_argument('--batch', default=20, type=int)
@@ -32,8 +41,11 @@ if __name__ == "__main__":
     files = "../../input/co-skel-448x448/CoSkel+/train.csv"
     lr = args.lr
     device = "cuda"
+    freeze_encoder=False
     checkpoints = 5
     batch_size = args.batch
+    weighted = True
+
 
     try:
         os.makedirs("Checkpoints")
@@ -42,13 +54,17 @@ if __name__ == "__main__":
 
     td = LoadData(files, rootDir)
     train_dataloader = DataLoader(td,batch_size=batch_size)
-    model = Model()
+    model = Model(device,freeze_encoder)
     # print(e.parameters())
     for params in model.parameters():
         params.requires_grad = True
 
-    print(model)
-    criterion = nn.BCELoss()
+    # print(model)
+    if weighted:
+        criterion = BCELoss_class_weighted()
+    else:
+        criterion = nn.BCELoss()
+
     optimizer = torch.optim.Adam(model.parameters(),lr = lr)
     for epoch in tqdm(range(epochs)):
         loss_arr = []
@@ -61,7 +77,10 @@ if __name__ == "__main__":
             pred = model(img)
             # print(torch.unique(pred),torch.unique(label))
             # print("lossing")
-            loss = criterion(pred,label)
+            if weighted:
+                loss = criterion(pred,label,weights)
+            else:
+                loss = criterion(pred,label)
             optimizer.zero_grad()
             # print("backing")
             loss.backward()
