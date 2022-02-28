@@ -17,6 +17,7 @@ def BCELoss_class_weighted():
 
     def loss(input, target,weights):
         input = torch.clamp(input,min=1e-7,max=1-1e-7)
+        print(input.shape,target.shape,weights.shape)
         bce = - weights[:,0] * target * torch.log(input) - (1 - target) * weights[:,1] * torch.log(1 - input)
         return torch.mean(bce)
 
