@@ -75,9 +75,10 @@ if __name__ == "__main__":
     for epoch in tqdm(range(epochs)):
         loss_arr = []
         # print(f"Epoch: {epoch}-------Starting:")
-        for i, (img,label) in enumerate(tqdm(train_dataloader,0)):
+        for i, (img,label,weights) in enumerate(tqdm(train_dataloader,0)):
             img = img.to(device)
             label = label.to(device)
+            weights = weights.to(device)
             model = model.to(device)
             # print("modelling")
             pred = model(img)
