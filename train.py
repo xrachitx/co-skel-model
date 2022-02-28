@@ -20,13 +20,18 @@ def BCELoss_class_weighted():
         bce = - weights[:,0] * target * torch.log(input) - (1 - target) * weights[:,1] * torch.log(1 - input)
         return torch.mean(bce)
 
-  return loss
+    return loss
 
 def parse_args():
     parser = argparse.ArgumentParser(description='TRAIN CoSkel+')
     parser.add_argument('--batch', default=20, type=int)
     parser.add_argument('--epochs', default=20, type=int)
     parser.add_argument('--lr', default=1e-5, type=float)
+    parser.add_argument('--rootDir', default="../../input/co-skel-448x448/CoSkel+", type=str)
+    parser.add_argument('--files', default="../../input/co-skel-448x448/CoSkel+/train.csv", type=str)
+    parser.add_argument('--device', default="cuda", type=str)
+    parser.add_argument('--freeze_encoder', default=False, type=bool)
+    parser.add_argument('--weighted', default=True, type=bool)
 
     args = parser.parse_args()
 
