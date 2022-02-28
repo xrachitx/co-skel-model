@@ -26,6 +26,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='TRAIN CoSkel+')
     parser.add_argument('--batch', default=20, type=int)
     parser.add_argument('--epochs', default=20, type=int)
+    parser.add_argument('--checkpoints', default=5, type=int)
     parser.add_argument('--lr', default=1e-5, type=float)
     parser.add_argument('--rootDir', default="../../input/co-skel-448x448/CoSkel+", type=str)
     parser.add_argument('--files', default="../../input/co-skel-448x448/CoSkel+/train.csv", type=str)
@@ -42,14 +43,14 @@ if __name__ == "__main__":
     args = parse_args()
 
     epochs = args.epochs
-    rootDir ="../../input/co-skel-448x448/CoSkel+"
-    files = "../../input/co-skel-448x448/CoSkel+/train.csv"
+    rootDir =args.rootDir
+    files = args.files
     lr = args.lr
-    device = "cuda"
-    freeze_encoder=False
+    device = args.device
+    freeze_encoder=args.
     checkpoints = 5
     batch_size = args.batch
-    weighted = True
+    weighted = args.weighted
 
 
     try:
