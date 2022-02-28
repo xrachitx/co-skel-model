@@ -20,9 +20,9 @@ class LoadData(Dataset):
 
     def __getitem__(self, idx):
 
-        inputName = os.path.join(self.rootDir, self.frame.iloc[idx, 0][:])
-        targetName = os.path.join(self.rootDir, self.frame.iloc[idx, 1][:])
-        print(inputName,targetName)
+        inputName = os.path.join(self.rootDir, self.frame.iloc[idx, 0][1:])
+        targetName = os.path.join(self.rootDir, self.frame.iloc[idx, 1][1:])
+        print(inputName,targetName,self.rootDir, self.frame.iloc[idx, 1][1:])
         inputImage = cv2.imread(inputName)
         targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
     
