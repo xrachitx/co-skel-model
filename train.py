@@ -20,12 +20,12 @@ def BCELoss_class_weighted():
         inpt = inpt.squeeze()
         target = target.squeeze()
         
-        print(inpt.shape,target.shape,weights[:,0].shape)
+        # print(inpt.shape,target.shape,weights[:,0].shape)
         weights = torch.unsqueeze(weights,axis=2)
         weights = torch.unsqueeze(weights,axis=3)
         weights = torch.tile(weights,(1,1,inpt.shape[-2],inpt.shape[-1]))
-        print(weights[:,0])
-        bce = - weights[:,0] * target * torch.log(inpt) - (1 - target) * weights[:,1] * torch.log(1 - inpt)
+        # print(weights[:,0)
+        bce = - weights[:,0,:,:] * target * torch.log(inpt) - (1 - target) * weights[:,1,:,:] * torch.log(1 - inpt)
         return torch.mean(bce)
 
     return loss
