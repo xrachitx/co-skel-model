@@ -15,10 +15,13 @@ import argparse
 
 def BCELoss_class_weighted():
 
-    def loss(input, target,weights):
-        input = torch.clamp(input,min=1e-7,max=1-1e-7)
-        print(input.shape,target.shape,weights.shape)
-        bce = - weights[:,0] * target * torch.log(input) - (1 - target) * weights[:,1] * torch.log(1 - input)
+    def loss(inpt, target,weights):
+        inpt = torch.clamp(inpt,min=1e-7,max=1-1e-7)
+        inpt = inpt.squeeze()
+        target = target.squeeze()
+        
+        print(inpt.shape,target.shape,weights[:,0].shape)
+        bce = - weights[:,0] * target * torch.log(inpt) - (1 - target) * weights[:,1] * torch.log(1 - inpt)
         return torch.mean(bce)
 
     return loss
