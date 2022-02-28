@@ -47,8 +47,8 @@ if __name__ == "__main__":
     files = args.files
     lr = args.lr
     device = args.device
-    freeze_encoder=args.
-    checkpoints = 5
+    freeze_encoder=args.freeze_encoder
+    checkpoints = args.checkpoints
     batch_size = args.batch
     weighted = args.weighted
 
