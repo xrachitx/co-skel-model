@@ -35,7 +35,7 @@ class LoadData(Dataset):
         inputImage = inputImage.transpose((2, 0, 1))
         targetImage = np.expand_dims(targetImage,axis=0)
 
-        return inputImage, targetImage,weights, self.frame.iloc[idx, 0]
+        return inputImage, targetImage,weights
 
 if __name__ == "__main__":
     rootDir ="./CoSkel+"
