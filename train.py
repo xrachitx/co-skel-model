@@ -102,7 +102,7 @@ if __name__ == "__main__":
             weights = weights.to(device)
             model = model.to(device)
             class_label = class_label.to(device)
-            print("class_label: ",class_label.shape)
+            print(img.shape,"class_label: ",class_label.shape, class_label)
             # print("modelling")
             if class_loss:
                 pred,class_out = model(img)
