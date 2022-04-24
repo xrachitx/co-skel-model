@@ -96,7 +96,7 @@ if __name__ == "__main__":
     for epoch in tqdm(range(epochs)):
         loss_arr = []
         # print(f"Epoch: {epoch}-------Starting:")
-        for i, (img,label,weights,class_label,_) in tqdm(enumerate(train_dataloader,0)):
+        for i, (img,label,weights,class_label,_) in enumerate(train_dataloader,0):
             img = img.to(device)
             label = label.to(device)
             weights = weights.to(device)
