@@ -78,7 +78,7 @@ if __name__ == "__main__":
         print("Checkpoint Folder Exists")
 
     td = LoadData(files, rootDir)
-    train_dataloader = DataLoader(td,batch_size=batch_size)
+    train_dataloader = DataLoader(td,batch_size=batch_size,shuffle=True)
     model = Model(device,num_classes,class_loss,freeze_encoder)
     # print(e.parameters())
     for params in model.parameters():
