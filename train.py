@@ -40,8 +40,8 @@ def parse_args():
     parser.add_argument('--rootDir', default="../../input/co-skel-448x448/CoSkel+", type=str)
     parser.add_argument('--files', default="../../input/co-skel-448x448/CoSkel+/train.csv", type=str)
     parser.add_argument('--device', default="cuda", type=str)
-    parser.add_argument('--freeze_encoder', default=False, type=bool)
-    parser.add_argument('--weighted', default=True, type=bool)
+#     parser.add_argument('--freeze_encoder', default=False, type=bool)
+#     parser.add_argument('--weighted', default=True, type=bool)
 #     parser.add_argument('--weighted', default=True, type=bool)
     parser.add_argument('--freeze_encoder', dest='freeze_encoder', action='store_true',
                     help='Freezing the encoder')
