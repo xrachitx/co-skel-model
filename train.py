@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument('--epochs', default=20, type=int)
     parser.add_argument('--checkpoints', default=5, type=int)
     parser.add_argument('--num_classes', default=16, type=int)
-    parser.add_argument('--lr', default=1e-5, type=float)
+    parser.add_argument('--lr', default=1e-4, type=float)
     parser.add_argument('--rootDir', default="../../input/co-skel-448x448/CoSkel+", type=str)
     parser.add_argument('--files', default="../../input/co-skel-448x448/CoSkel+/train.csv", type=str)
     parser.add_argument('--device', default="cuda", type=str)
