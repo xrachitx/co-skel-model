@@ -35,12 +35,20 @@ def parse_args():
     parser.add_argument('--batch', default=20, type=int)
     parser.add_argument('--epochs', default=20, type=int)
     parser.add_argument('--checkpoints', default=5, type=int)
+    parser.add_argument('--num_classes', default=16, type=int)
     parser.add_argument('--lr', default=1e-5, type=float)
     parser.add_argument('--rootDir', default="../../input/co-skel-448x448/CoSkel+", type=str)
     parser.add_argument('--files', default="../../input/co-skel-448x448/CoSkel+/train.csv", type=str)
     parser.add_argument('--device', default="cuda", type=str)
     parser.add_argument('--freeze_encoder', default=False, type=bool)
     parser.add_argument('--weighted', default=True, type=bool)
+#     parser.add_argument('--weighted', default=True, type=bool)
+    parser.add_argument('--freeze_encoder', dest='freeze_encoder', action='store_true',
+                    help='Freezing the encoder')
+    parser.add_argument('--weighted', dest='weighted', action='store_true',
+                    help='using weighted loss')
+    parser.add_argument('--class_loss', dest='class_loss', action='store_true',
+                    help='using class loss')
 
     args = parser.parse_args()
 
@@ -59,6 +67,8 @@ if __name__ == "__main__":
     checkpoints = args.checkpoints
     batch_size = args.batch
     weighted = args.weighted
+    class_loss = args.class_loss
+    num_classes = args.num_classes
 
 
     try:
@@ -68,7 +78,7 @@ if __name__ == "__main__":
 
     td = LoadData(files, rootDir)
     train_dataloader = DataLoader(td,batch_size=batch_size)
-    model = Model(device,freeze_encoder)
+    model = Model(device,freeze_encoder,num_classes,class_loss)
     # print(e.parameters())
     for params in model.parameters():
         params.requires_grad = True
@@ -78,24 +88,33 @@ if __name__ == "__main__":
         criterion = BCELoss_class_weighted()
     else:
         criterion = nn.BCELoss()
+    if class_loss:
+        class_criterion = nn.CrossEntropyLoss()
 
     optimizer = torch.optim.Adam(model.parameters(),lr = lr)
     for epoch in tqdm(range(epochs)):
         loss_arr = []
         # print(f"Epoch: {epoch}-------Starting:")
-        for i, (img,label,weights,_) in enumerate(train_dataloader,0):
+        for i, (img,label,weights,class_label,_) in enumerate(train_dataloader,0):
             img = img.to(device)
             label = label.to(device)
             weights = weights.to(device)
             model = model.to(device)
+            class_label = class_label.to(device)
+            print("class_label: ",class_label.shape)
             # print("modelling")
-            pred = model(img)
+            if class_loss:
+                pred,class_out = model(img)
+            else:
+                pred = model(img)
             # print(torch.unique(pred),torch.unique(label))
             # print("lossing")
             if weighted:
                 loss = criterion(pred,label,weights)
             else:
                 loss = criterion(pred,label)
+            if class_loss:
+                loss += class_criterion(class_out,class_label)
             optimizer.zero_grad()
             # print("backing")
             loss.backward()
