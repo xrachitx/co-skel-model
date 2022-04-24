@@ -9,8 +9,10 @@ from dataloader import LoadData
 from torch.utils.data import Dataset, DataLoader
 
 class Model(nn.Module):
-    def __init__(self,device,freeze_encoder=True):
+    def __init__(self,device,out_classes,class_pred=False,freeze_encoder=True):
         super().__init__()
+        self.class_pred = class_pred
+        self.out_classes = out_classes
         vgg1 = models.vgg16(pretrained = True)
         vgg2 = models.vgg16(pretrained = True)
         vgg3 = models.vgg16(pretrained = True)
@@ -31,6 +33,18 @@ class Model(nn.Module):
         vgg16_4 = nn.ModuleList(list(vgg4.features))
 
         self.vgg16s = nn.ModuleList([vgg16_1,vgg16_2,vgg16_3,vgg16_4])
+        if self.class_pred:
+            self.fc_layer = nn.Sequential(
+                            nn.Linear(in_features=100352, out_features=100352//4),
+                            nn.ReLU(),
+                            nn.Linear(in_features=100352//4, out_features=256),
+                            nn.ReLU(),
+                            nn.Linear(in_features=256, out_features=84),
+                            nn.ReLU()
+                            )
+            self.class_output = nn.Sequential(
+                                nn.Linear(in_features=84, out_features=self.out_classes)
+                                )
         # print(self.vgg16s)
         # for vgg in self.vgg16s:
             
@@ -79,7 +93,12 @@ class Model(nn.Module):
 
         enc_out =torch.zeros_like(self.vgg_features[0][-2])
         x = self.concat_imgs([self.vgg_features[i][-1] for i in range(4)],enc_out)
-        print(x.shape)
+        if self.class_pred:
+            y = torch.flatten(x,1)
+            y = self.fc_layer(y)
+            y = self.class_output(y)
+            y = F.softmax(y, dim=1)
+#         print(x.shape)
         
         for i in range(3,-1,-1):
             x = self.transpose_convs[3-i](x)
@@ -92,8 +111,10 @@ class Model(nn.Module):
         x = self.transpose_convs[-1](x)
         x = self.sigmoid(x)
         # print(x.shape)
-        return x
-
+        if not self.class_pred:
+            return x
+        else:
+            return x,y
 if __name__ == "__main__":
     rootDir ="./CoSkel+"
     files = "./CoSkel+/train.csv"
