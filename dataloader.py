@@ -8,6 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 import torch
 import cv2
 
+ANIMOLS = {"Aeroplane": 0, "Bear":1, "Bird":2, "Boat":3, "Bus":4, "Car":5, "Cats":6, "Cow":7, "Cycle":8, "Dog":9, "Elephant": 10, "Giraffe":11, "Horse":12, "Person":13, "Sheep":14, "Zebra":15}
 
 class LoadData(Dataset):
     def __init__(self, fileNames, rootDir, transform=None):
@@ -22,6 +23,8 @@ class LoadData(Dataset):
 
         inputName = os.path.join(self.rootDir, self.frame.iloc[idx, 0][1:])
         targetName = os.path.join(self.rootDir, self.frame.iloc[idx, 1][1:])
+        animol = self.frame.iloc[idx, 1][1:].split("/")[2]
+        print(animol,ANIMOLS[animol])
         # print(inputName,targetName,self.rootDir, self.frame.iloc[idx, 1][1:])
         inputImage = cv2.imread(inputName)
         targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
@@ -36,7 +39,7 @@ class LoadData(Dataset):
         targetImage = np.expand_dims(targetImage,axis=0)
         
 #         return inputImage, targetImage,weights
-        return inputImage, targetImage,weights, self.frame.iloc[idx, 0]
+        return inputImage, targetImage,weights, np.array(ANIMOLS[animol]),self.frame.iloc[idx, 0]
 
 if __name__ == "__main__":
     rootDir ="./CoSkel+"
