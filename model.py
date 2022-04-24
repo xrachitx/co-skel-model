@@ -35,9 +35,7 @@ class Model(nn.Module):
         self.vgg16s = nn.ModuleList([vgg16_1,vgg16_2,vgg16_3,vgg16_4])
         if self.class_pred:
             self.fc_layer = nn.Sequential(
-                            nn.Linear(in_features=100352, out_features=100352//4),
-                            nn.ReLU(),
-                            nn.Linear(in_features=100352//4, out_features=256),
+                            nn.Linear(in_features=100352, out_features=256),
                             nn.ReLU(),
                             nn.Linear(in_features=256, out_features=84),
                             nn.ReLU()
