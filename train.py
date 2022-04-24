@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
     td = LoadData(files, rootDir)
     train_dataloader = DataLoader(td,batch_size=batch_size)
-    model = Model(device,freeze_encoder,num_classes,class_loss)
+    model = Model(device,num_classes,class_loss,freeze_encoder)
     # print(e.parameters())
     for params in model.parameters():
         params.requires_grad = True
