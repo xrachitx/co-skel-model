@@ -102,11 +102,11 @@ if __name__ == "__main__":
             weights = weights.to(device)
             model = model.to(device)
             class_label = class_label.to(device)
-            print(img.shape,"class_label: ",class_label.shape, class_label)
+#             print(img.shape,"class_label: ",class_label.shape, class_label)
             # print("modelling")
             if class_loss:
                 pred,class_out = model(img)
-                print(torch.argmax(class_out,axis=1))
+#                 print(torch.argmax(class_out,axis=1))
             else:
                 pred = model(img)
             # print(torch.unique(pred),torch.unique(label))
@@ -115,10 +115,10 @@ if __name__ == "__main__":
                 loss = criterion(pred,label,weights)
             else:
                 loss = criterion(pred,label)
-            print("wloss: ",loss) 
+#             print("wloss: ",loss) 
             if class_loss:
                 loss += class_criterion(class_out,class_label)
-            print("closs+wloss: ",loss)
+#             print("closs+wloss: ",loss)
             optimizer.zero_grad()
             # print("backing")
             loss.backward()
