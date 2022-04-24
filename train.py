@@ -106,7 +106,7 @@ if __name__ == "__main__":
             # print("modelling")
             if class_loss:
                 pred,class_out = model(img)
-                print(class_out)
+                print(torch.argmax(class_out,axis=1))
             else:
                 pred = model(img)
             # print(torch.unique(pred),torch.unique(label))
