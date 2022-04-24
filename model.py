@@ -79,6 +79,7 @@ class Model(nn.Module):
 
         enc_out =torch.zeros_like(self.vgg_features[0][-2])
         x = self.concat_imgs([self.vgg_features[i][-1] for i in range(4)],enc_out)
+        print(x.shape)
         
         for i in range(3,-1,-1):
             x = self.transpose_convs[3-i](x)
@@ -87,7 +88,7 @@ class Model(nn.Module):
             out = torch.zeros((reqd_shape[0], reqd_shape[1], reqd_shape[-2]*2, reqd_shape[-1]*2),dtype= self.vgg_features[0][i].dtype)
             out = self.concat_imgs([self.vgg_features[j][i] for j in range(4)],out)
             x = x+out
-        print(x.shape)
+        
         x = self.transpose_convs[-1](x)
         x = self.sigmoid(x)
         # print(x.shape)
