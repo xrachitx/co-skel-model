@@ -106,6 +106,7 @@ if __name__ == "__main__":
             # print("modelling")
             if class_loss:
                 pred,class_out = model(img)
+                print(class_out)
             else:
                 pred = model(img)
             # print(torch.unique(pred),torch.unique(label))
@@ -114,8 +115,10 @@ if __name__ == "__main__":
                 loss = criterion(pred,label,weights)
             else:
                 loss = criterion(pred,label)
+            print("wloss: ",loss) 
             if class_loss:
                 loss += class_criterion(class_out,class_label)
+            print("closs+wloss: ",loss)
             optimizer.zero_grad()
             # print("backing")
             loss.backward()
