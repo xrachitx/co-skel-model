@@ -110,6 +110,7 @@ if __name__ == "__main__":
     weighted = args.weighted
     class_loss = args.class_loss
     num_classes = args.num_classes
+    dice_loss = args.dice_loss
     print(args.freeze_encoder,args.weighted,args.class_loss)
 
 
