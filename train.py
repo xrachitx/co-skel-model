@@ -158,13 +158,13 @@ if __name__ == "__main__":
                 pred = model(img)
             # print(torch.unique(pred),torch.unique(label))
             # print("lossing")
-            print("out: ",pred.shape,"label: ",label.shape)
+#             print("out: ",pred.shape,"label: ",label.shape)
             if weighted and dice_loss:
-                loss = criterion(pred,label,weights) + dice_criterion(pred,label,softmax=True)
+                loss = criterion(pred,label,weights) + dice_criterion(pred,label.squeeze(1),softmax=True)
             elif weighted:
                 loss = criterion(pred,label,weights)
             elif dice_loss:
-                loss = dice_criterion(pred,label,softmax=True)
+                loss = dice_criterion(pred,label.squeeze(1),softmax=True)
             else:
                 loss = criterion(pred,label)
 #             print("wloss: ",loss) 
