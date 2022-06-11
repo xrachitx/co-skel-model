@@ -13,6 +13,45 @@ from tqdm import tqdm
 import os
 import argparse
 
+class DiceLoss(nn.Module):
+    def __init__(self, n_classes):
+        super(DiceLoss, self).__init__()
+        self.n_classes = n_classes
+
+    def _one_hot_encoder(self, input_tensor):
+        tensor_list = []
+        for i in range(self.n_classes):
+            temp_prob = input_tensor == i  # * torch.ones_like(input_tensor)
+            tensor_list.append(temp_prob.unsqueeze(1))
+        output_tensor = torch.cat(tensor_list, dim=1)
+        return output_tensor.float()
+
+    def _dice_loss(self, score, target):
+        target = target.float()
+        smooth = 1e-5
+        intersect = torch.sum(score * target)
+        y_sum = torch.sum(target * target)
+        z_sum = torch.sum(score * score)
+        loss = (2 * intersect + smooth) / (z_sum + y_sum + smooth)
+        loss = 1 - loss
+        return loss
+
+    def forward(self, inputs, target, weight=None, softmax=False):
+        if softmax:
+            inputs = torch.softmax(inputs, dim=1)
+        target = self._one_hot_encoder(target)
+        if weight is None:
+            weight = [1] * self.n_classes
+        assert inputs.size() == target.size(), 'predict {} & target {} shape do not match'.format(inputs.size(), target.size())
+        class_wise_dice = []
+        loss = 0.0
+        for i in range(0, self.n_classes):
+            dice = self._dice_loss(inputs[:, i], target[:, i])
+            class_wise_dice.append(1.0 - dice.item())
+            loss += dice * weight[i]
+        return loss / self.n_classes
+
+
 def BCELoss_class_weighted():
 
     def loss(inpt, target,weights):
@@ -49,6 +88,8 @@ def parse_args():
                     help='using weighted loss')
     parser.add_argument('--class_loss', dest='class_loss', action='store_true',
                     help='using class loss')
+    parser.add_argument('--dice_loss', dest='class_loss', action='store_true',
+                    help='using dice loss')
 
     args = parser.parse_args()
 
@@ -87,10 +128,15 @@ if __name__ == "__main__":
     # print(model)
     if weighted:
         criterion = BCELoss_class_weighted()
+    
     else:
         criterion = nn.BCELoss()
+        
     if class_loss:
         class_criterion = nn.CrossEntropyLoss()
+        
+    if dice_loss:
+        dice_criterion = DiceLoss(num_classes)
 
     optimizer = torch.optim.Adam(model.parameters(),lr = lr)
     for epoch in tqdm(range(epochs)):
@@ -111,8 +157,12 @@ if __name__ == "__main__":
                 pred = model(img)
             # print(torch.unique(pred),torch.unique(label))
             # print("lossing")
-            if weighted:
+            if weighted and dice_loss:
+                loss = criterion(pred,label,weights) + dice_criterion(pred,label,softmax=True)
+            elif weighted:
                 loss = criterion(pred,label,weights)
+            elif dice_loss:
+                loss = dice_criterion(pred,label,softmax=True)
             else:
                 loss = criterion(pred,label)
 #             print("wloss: ",loss) 
