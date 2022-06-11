@@ -37,6 +37,7 @@ class LoadData(Dataset):
             out_im = np.zeros((448,448,2))
             out_im[:,:,0] = np.where(targetImage == 0, 1, 0)
             out_im[:,:,1] = np.where(targetImage == 1, 1, 0)
+            out_im = out_im.transpose((2, 0, 1))
             targetImage = out_im
 #             out_im = out_im.astype(np.float32)
 #             out_im = out_im.transpose((2, 0, 1))
