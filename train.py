@@ -88,7 +88,7 @@ def parse_args():
                     help='using weighted loss')
     parser.add_argument('--class_loss', dest='class_loss', action='store_true',
                     help='using class loss')
-    parser.add_argument('--dice_loss', dest='class_loss', action='store_true',
+    parser.add_argument('--dice_loss', dest='dice_loss', action='store_true',
                     help='using dice loss')
 
     args = parser.parse_args()
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     class_loss = args.class_loss
     num_classes = args.num_classes
     dice_loss = args.dice_loss
-    print(args.freeze_encoder,args.weighted,args.class_loss)
+    print(args.freeze_encoder,args.weighted,args.class_loss,dice_loss)
 
 
     try:
