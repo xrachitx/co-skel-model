@@ -37,6 +37,7 @@ class LoadData(Dataset):
         targetImage = targetImage.astype(np.float32)
         inputImage = inputImage.transpose((2, 0, 1))
         targetImage = np.expand_dims(targetImage,axis=0)
+        print("out: ",targetImage.shape)
         
 #         return inputImage, targetImage,weights
         return inputImage, targetImage,weights, np.array(ANIMOLS[animol]),self.frame.iloc[idx, 0]
