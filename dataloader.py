@@ -15,6 +15,7 @@ class LoadData(Dataset):
         self.rootDir = rootDir
         self.transform = transform
         self.dice_loss = dice_loss
+        self.dice_loss = False
         self.frame = pd.read_csv(fileNames, dtype=str, delimiter=',', header=None)
     
     def __len__(self):
