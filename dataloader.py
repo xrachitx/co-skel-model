@@ -14,6 +14,7 @@ class LoadData(Dataset):
     def __init__(self, fileNames, rootDir, dice_loss,transform=None):
         self.rootDir = rootDir
         self.transform = transform
+        self.dice_loss = dice_loss
         self.frame = pd.read_csv(fileNames, dtype=str, delimiter=',', header=None)
     
     def __len__(self):
@@ -32,7 +33,7 @@ class LoadData(Dataset):
         
         targetImage = targetImage > 0.0
         targetImage = np.expand_dims(targetImage,axis=0)
-        if dice_loss:
+        if self.dice_loss:
             out_im = np.zeros((448,448,2))
             out_im[:,:,0] = np.where(targetImage == 0, 1, 0)
             out_im[:,:,1] = np.where(targetImage == 1, 1, 0)
