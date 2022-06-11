@@ -31,19 +31,21 @@ class LoadData(Dataset):
     
         
         targetImage = targetImage > 0.0
+        targetImage = np.expand_dims(targetImage,axis=0)
         if dice_loss:
             out_im = np.zeros((448,448,2))
             out_im[:,:,0] = np.where(targetImage == 0, 1, 0)
             out_im[:,:,1] = np.where(targetImage == 1, 1, 0)
-            out_im = out_im.astype(np.float32)
-            out_im = out_im.transpose((2, 0, 1))
+            targetImage = out_im
+#             out_im = out_im.astype(np.float32)
+#             out_im = out_im.transpose((2, 0, 1))
         counts = np.unique(targetImage,return_counts=True)[1]
         weights = np.array([ counts[0]/(counts[0]+counts[1]) , counts[1]/(counts[0]+counts[1]) ])
         inputImage = inputImage.astype(np.float32)
         targetImage = targetImage.astype(np.float32)
         inputImage = inputImage.transpose((2, 0, 1))
-        targetImage = np.expand_dims(targetImage,axis=0)
-        print("out: ",targetImage.shape)
+        
+#         print("out: ",targetImage.shape)
         
 #         return inputImage, targetImage,weights
         return inputImage, targetImage,weights, np.array(ANIMOLS[animol]),self.frame.iloc[idx, 0]
