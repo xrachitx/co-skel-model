@@ -54,7 +54,7 @@ class DiceLoss(nn.Module):
 
 def BCELoss_class_weighted():
 
-    def loss(inpt, target,weights):
+    def loss(inpt, target,weights,device):
         inpt = torch.clamp(inpt,min=1e-7,max=1-1e-7)
         inpt = inpt.squeeze()
         target = target.squeeze()
@@ -62,7 +62,7 @@ def BCELoss_class_weighted():
         out_im = torch.zeros((target.shape[0],2,448,448))
         out_im[:,0,:,:] = torch.where(target == 0, 1, 0)
         out_im[:,1,:,:] = torch.where(target == 1, 1, 0)
-        out_im = out_im.cuda()
+        out_im = out_im.to(device)
 #         out_im = out_im.transpose((2, 0, 1))
         
         # print(inpt.shape,target.shape,weights[:,0].shape)
@@ -145,7 +145,7 @@ if __name__ == "__main__":
         
     if dice_loss:
         dice_criterion = DiceLoss(num_classes)
-
+    model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(),lr = lr)
     for epoch in tqdm(range(epochs)):
         loss_arr = []
@@ -154,7 +154,7 @@ if __name__ == "__main__":
             img = img.to(device)
             label = label.to(device)
             weights = weights.to(device)
-            model = model.to(device)
+            
             class_label = class_label.to(device)
 #             print(img.shape,"class_label: ",class_label.shape, class_label)
             # print("modelling")
@@ -167,7 +167,8 @@ if __name__ == "__main__":
             # print("lossing")
 #             print("out: ",pred.shape,"label: ",label.shape)
             if weighted and dice_loss:
-                loss = criterion(pred,label,weights) + dice_criterion(pred,label.squeeze(1),softmax=True)
+                print("WE HERE")
+                loss = criterion(pred,label,weights,device) + dice_criterion(pred,label.squeeze(1),softmax=True)
             elif weighted:
                 loss = criterion(pred,label,weights)
             elif dice_loss:
