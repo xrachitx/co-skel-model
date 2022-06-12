@@ -70,7 +70,7 @@ def BCELoss_class_weighted():
         weights = torch.unsqueeze(weights,axis=3)
         weights = torch.tile(weights,(1,1,inpt.shape[-2],inpt.shape[-1]))
         # print(weights[:,0)
-        print(weights[:,0,:,:].shape,out_im.shape,inpt.shape)
+#         print(weights[:,0,:,:].shape,out_im.shape,inpt.shape)
         bce = - weights[:,0,:,:] * out_im[:,1,:,:] * torch.log(inpt[:,1,:,:]) - (1 - out_im[:,0,:,:]) * weights[:,1,:,:] * torch.log(1 - inpt[:,0,:,:])
         return torch.mean(bce)
 
@@ -167,7 +167,7 @@ if __name__ == "__main__":
             # print("lossing")
 #             print("out: ",pred.shape,"label: ",label.shape)
             if weighted and dice_loss:
-                print("WE HERE")
+#                 print("WE HERE")
                 loss = criterion(pred,label,weights,device) + dice_criterion(pred,label.squeeze(1),softmax=True)
             elif weighted:
                 loss = criterion(pred,label,weights)
