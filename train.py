@@ -62,6 +62,7 @@ def BCELoss_class_weighted():
         out_im = torch.zeros((target.shape[0],2,448,448))
         out_im[:,0,:,:] = torch.where(target == 0, 1, 0)
         out_im[:,1,:,:] = torch.where(target == 1, 1, 0)
+        out_im = out_im.cuda()
 #         out_im = out_im.transpose((2, 0, 1))
         
         # print(inpt.shape,target.shape,weights[:,0].shape)
