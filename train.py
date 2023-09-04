@@ -135,7 +135,7 @@ if __name__ == "__main__":
     num_classes = args.num_classes
     dice_loss = args.dice_loss
     data_augment = args.data_augment
-    transforms = None
+    transform = None
     print(args.freeze_encoder,args.weighted,args.class_loss,dice_loss)
 
     try:
@@ -150,9 +150,9 @@ if __name__ == "__main__":
                             transforms.RandomRotation(30),  
                             None,
                          ]
-        transforms = RandomTransform(transform_list)
+        transform = RandomTransform(transform_list)
         
-    td = LoadData(files, rootDir,dice_loss,transforms)
+    td = LoadData(files, rootDir,dice_loss,transform)
     train_dataloader = DataLoader(td,batch_size=batch_size,shuffle=True)
     model = Model(device,num_classes,class_loss,freeze_encoder)
     # print(e.parameters())
