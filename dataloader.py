@@ -37,7 +37,6 @@ class LoadData(Dataset):
             inputImage = Image.fromarray(inputImage)
             inputImage = self.transform(inputImage)
             inputImage = np.array(inputImage)
-            print(inputImage.shape)
         targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
         targetImage = targetImage > 0.0
         targetImage = np.expand_dims(targetImage,axis=0)
