@@ -50,7 +50,20 @@ class DiceLoss(nn.Module):
             class_wise_dice.append(1.0 - dice.item())
             loss += dice * weight[i]
         return loss / self.n_classes
+    
+class RandomTransform:
+    def __init__(self, transform_list):
+        self.transform_list = transform_list
 
+    def __call__(self, image):
+        # Randomly choose a transformation from the list
+        random_transform = random.choice(self.transform_list)
+        
+        # If the random_transform is None, choose a default transformation (no change)
+        if random_transform is None:
+            return image
+
+        return random_transform(image)
 
 def BCELoss_class_weighted():
 
@@ -95,6 +108,8 @@ def parse_args():
                     help='using weighted loss')
     parser.add_argument('--class_loss', dest='class_loss', action='store_true',
                     help='using class loss')
+    parser.add_argument('--data_augment', dest='data_augment', action='store_true',
+                    help='using data augmentation in training')
     parser.add_argument('--dice_loss', dest='dice_loss', action='store_true',
                     help='using dice loss')
 
@@ -118,15 +133,25 @@ if __name__ == "__main__":
     class_loss = args.class_loss
     num_classes = args.num_classes
     dice_loss = args.dice_loss
+    data_augment = args.data_augment
+    transforms = None
     print(args.freeze_encoder,args.weighted,args.class_loss,dice_loss)
-
 
     try:
         os.makedirs("Checkpoints")
     except:
         print("Checkpoint Folder Exists")
 
-    td = LoadData(files, rootDir,dice_loss)
+    if data_augment:
+        transform_list = [  transforms.RandomHorizontalFlip(),
+                            transforms.RandomVerticalFlip(),
+                            transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1)
+                            transforms.RandomRotation(30),  
+                            None,
+                         ]
+        transforms = RandomTransform(transform_list)
+        
+    td = LoadData(files, rootDir,dice_loss,transforms)
     train_dataloader = DataLoader(td,batch_size=batch_size,shuffle=True)
     model = Model(device,num_classes,class_loss,freeze_encoder)
     # print(e.parameters())

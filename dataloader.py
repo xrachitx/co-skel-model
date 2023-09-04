@@ -29,6 +29,8 @@ class LoadData(Dataset):
 #         print(animol,ANIMOLS[animol])
         # print(inputName,targetName,self.rootDir, self.frame.iloc[idx, 1][1:])
         inputImage = cv2.imread(inputName)
+        if self.transform:
+            inputImage = self.transform(inputImage)
         targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
     
         
