@@ -36,8 +36,8 @@ class LoadData(Dataset):
             # Create a PIL image from the RGB image data
             inputImage = Image.fromarray(inputImage)
             inputImage = self.transform(inputImage)
-            print(type(inputImage))
-            inputImage = inputImage.cpu().numpy()
+            inputImage = np.array(inputImage)
+            print(inputImage.shape)
         targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
         targetImage = targetImage > 0.0
         targetImage = np.expand_dims(targetImage,axis=0)
