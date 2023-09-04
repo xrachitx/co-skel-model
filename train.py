@@ -2,6 +2,7 @@ from importlib.resources import path
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision import transforms
 import torchvision.models as models
 import numpy as np
 import cv2 
