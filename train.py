@@ -204,6 +204,7 @@ if __name__ == "__main__":
                 loss = criterion(pred,label)
 #             print("wloss: ",loss) 
             if class_loss:
+                print(class_out.shape, class_label.shape)
                 loss += class_criterion(class_out,class_label)
 #             print("closs+wloss: ",loss)
             optimizer.zero_grad()
