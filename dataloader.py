@@ -32,7 +32,7 @@ class LoadData(Dataset):
         inputImage = cv2.imread(inputName)
         if self.transform:
             # Convert the cv2 image (BGR format) to RGB format
-            inputImage = cv2.cvtColor(inputImage, cv2.COLOR_BGR2RGB)
+            # inputImage = cv2.cvtColor(inputImage, cv2.COLOR_BGR2RGB)
             # Create a PIL image from the RGB image data
             inputImage = Image.fromarray(inputImage)
             inputImage = self.transform(inputImage)
