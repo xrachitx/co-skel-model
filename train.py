@@ -171,7 +171,7 @@ if __name__ == "__main__":
         class_criterion = nn.CrossEntropyLoss()
         
     if dice_loss:
-        dice_criterion = DiceLoss(num_classes)
+        dice_criterion = DiceLoss(2)
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(),lr = lr)
     for epoch in tqdm(range(epochs)):
@@ -204,9 +204,9 @@ if __name__ == "__main__":
                 loss = criterion(pred,label)
 #             print("wloss: ",loss) 
             if class_loss:
-                print(class_out)
-                print(class_label)
-                print(class_out.shape, class_label.shape)
+                # print(class_out)
+                # print(class_label)
+                # print(class_out.shape, class_label.shape)
                 loss += class_criterion(class_out,class_label)
 #             print("closs+wloss: ",loss)
             optimizer.zero_grad()
