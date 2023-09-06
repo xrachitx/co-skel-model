@@ -9,8 +9,8 @@ from torch.utils.data import Dataset, DataLoader
 import torch
 import cv2
 
-ANIMOLS = {"Aeroplane": 0, "Bear":1, "Bird":2, "Boat":3, "Bus":4, "Car":5, "Cats":6, "Cow":7, "Cycle":8, "Dog":9, "Elephant": 10, "Giraffe":11, "Horse":12, "Person":13, "Sheep":14, "Zebra":15}
-
+#ANIMOLS = {"Aeroplane": 0, "Bear":1, "Bird":2, "Boat":3, "Bus":4, "Car":5, "Cats":6, "Cow":7, "Cycle":8, "Dog":9, "Elephant": 10, "Giraffe":11, "Horse":12, "Person":13, "Sheep":14, "Zebra":15}
+ANIMOLS = {"Bear":0, "Bird":1, "Cats":2, "Cow":3, "Dog":4, "Elephant": 5, "Giraffe":6, "Horse":7, "Sheep":8, "Zebra":9}
 class LoadData(Dataset):
     def __init__(self, fileNames, rootDir, dice_loss,transform=None):
         self.rootDir = rootDir
