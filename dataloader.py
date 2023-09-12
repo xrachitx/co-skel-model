@@ -30,15 +30,15 @@ class LoadData(Dataset):
 #         print(animol,ANIMOLS[animol])
         # print(inputName,targetName,self.rootDir, self.frame.iloc[idx, 1][1:])
         inputImage = cv2.imread(inputName)
+        targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
+        targetImage = targetImage > 0.0
         if self.transform:
-            # Convert the cv2 image (BGR format) to RGB format
-            # inputImage = cv2.cvtColor(inputImage, cv2.COLOR_BGR2RGB)
-            # Create a PIL image from the RGB image data
             inputImage = Image.fromarray(inputImage)
             inputImage = self.transform(inputImage)
             inputImage = np.array(inputImage)
-        targetImage = cv2.imread(targetName, cv2.IMREAD_GRAYSCALE)
-        targetImage = targetImage > 0.0
+            targetImage = Image.fromarray(targetImage)
+            targetImage = self.transform(targetImage)
+            targetImage = np.array(targetImage)
         targetImage = np.expand_dims(targetImage,axis=0)
         if self.dice_loss:
             out_im = np.zeros((448,448,2))
