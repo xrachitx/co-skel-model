@@ -182,16 +182,17 @@ if __name__ == "__main__":
             weights = weights.to(device)
             
             class_label = class_label.to(device)
-#             print(img.shape,"class_label: ",class_label.shape, class_label)
+            print(img.shape,"class_label: ",class_label.shape, class_label)
             # print("modelling")
             if class_loss:
                 pred,class_out = model(img)
 #                 print(torch.argmax(class_out,axis=1))
             else:
                 pred = model(img)
+            print("out: ",pred.shape,"label: ",label.shape)
             # print(torch.unique(pred),torch.unique(label))
             # print("lossing")
-#             print("out: ",pred.shape,"label: ",label.shape)
+            
             if weighted and dice_loss:
 #                 print("WE HERE")
                 loss = criterion(pred,label,weights,device) + dice_criterion(pred,label.squeeze(1),softmax=True)
