@@ -14,6 +14,20 @@ from model import Model
 from tqdm import tqdm
 import os
 import argparse
+from prettytable import PrettyTable
+
+def count_parameters(model):
+    table = PrettyTable(["Modules", "Parameters"])
+    total_params = 0
+    for name, parameter in model.named_parameters():
+        if not parameter.requires_grad:
+            continue
+        params = parameter.numel()
+        table.add_row([name, params])
+        total_params += params
+    print(table)
+    print(f"Total Trainable Params: {total_params}")
+    return total_params
 
 class DiceLoss(nn.Module):
     def __init__(self, n_classes):
@@ -155,6 +169,7 @@ if __name__ == "__main__":
     td = LoadData(files, rootDir,dice_loss,transform)
     train_dataloader = DataLoader(td,batch_size=batch_size,shuffle=True)
     model = Model(device,num_classes,class_loss,freeze_encoder)
+    count_parameters(model)
     # print(e.parameters())
     for params in model.parameters():
         params.requires_grad = True
